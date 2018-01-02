@@ -1,33 +1,40 @@
-version: "2"
+version: "3"
 services:
   pythonathon:
     build: pythonathon_v3
     environment:
-#      DEBUGMODE: 0
+      DEBUGMODE: 1
+      PASSWORD_FILE: /secrets/db_password
       VIRTUAL_HOST: pythonathon.davidmaxson.name
       LETSENCRYPT_HOST: pythonathon.davidmaxson.name
       LETSENCRYPT_EMAIL: scnerd@gmail.com
+    volumes:
+      - "./secrets:/secrets:ro"
+    depends_on:
+      - db
 
-#  db:
-#    image: "postgres:alpine"
-#    restart: always
-#    environment:
-#      POSTGRES_PASSWORD: password
+  db:
+    image: "postgres:alpine"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD_FILE: /secrets/db_password
+      POSTGRES_DB: pythonathon
+      NETWORK_ACCESS: internal
+    volumes:
+      - "./secrets:/secrets:ro"
 
   nginx-proxy:
-    image: jwilder/nginx-proxy
+    image: jwilder/nginx-proxy:alpine
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
+      - "vhostd:/etc/nginx/vhost.d"
+      - "html:/usr/share/nginx/html"
+      - "certs:/etc/nginx/certs"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
-      - "/etc/nginx/certs"
 
-  letsencrypt-nginx-proxy-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    volumes_from:
-      - "nginx-proxy"
+volumes:
+  vhostd:
+  html:
+  certs:

@@ -1,0 +1,15 @@
+services:
+  pythonathon:
+    build: pythonathon_v3
+    environment:
+      DEBUGMODE: 0
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "vhostd:/etc/nginx/vhost.d"
+      - "html:/usr/share/nginx/html"
+      - "certs:/etc/nginx/certs"
+    depends_on:
+      - nginx-proxy
