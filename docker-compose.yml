@@ -1,13 +1,17 @@
 version: "3"
 services:
   pythonathon:
-    image: pythonathon:latest
+#    image: pythonathon:latest
+    build: pythonathon_v3
+    ports:
+      - 127.0.0.1:8000:8000
     environment:
       DEBUGMODE: 1
       PASSWORD_FILE: /secrets/db_password
       VIRTUAL_HOST: pythonathon.davidmaxson.name
       LETSENCRYPT_HOST: pythonathon.davidmaxson.name
       LETSENCRYPT_EMAIL: scnerd@gmail.com
+      JUPYTERHUB_HOST: jupyterhub
     volumes:
       - "./secrets:/secrets:ro"
     depends_on:
