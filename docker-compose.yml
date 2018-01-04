@@ -1,7 +1,7 @@
 version: "3"
 services:
   pythonathon:
-    build: pythonathon_v3
+    image: pythonathon:latest
     environment:
       DEBUGMODE: 1
       PASSWORD_FILE: /secrets/db_password
@@ -12,29 +12,41 @@ services:
       - "./secrets:/secrets:ro"
     depends_on:
       - db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        window: 5s
+    networks:
+      - ctfnet
+      - webnet
 
   db:
     image: "postgres:alpine"
-    restart: always
     environment:
       POSTGRES_PASSWORD_FILE: /secrets/db_password
       POSTGRES_DB: pythonathon
+      PGDATA: /persistent/postgres/data
       NETWORK_ACCESS: internal
     volumes:
       - "./secrets:/secrets:ro"
+      - "./db_data:/persistent/postgres/data"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        window: 5s
+    networks:
+      - ctfnet
+    healthcheck:
+      test: ["CMD", "psql", "-h", "localhost", "-p", "5432"]
 
-  nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "vhostd:/etc/nginx/vhost.d"
-      - "html:/usr/share/nginx/html"
-      - "certs:/etc/nginx/certs"
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+  jupyterhub:
+    image: jupyterhub/jupyterhub
 
-volumes:
-  vhostd:
-  html:
-  certs:
+networks:
+  ctfnet:
+  webnet:
+    external:
+      name: webnet
+
