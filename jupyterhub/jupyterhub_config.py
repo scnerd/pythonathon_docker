@@ -663,7 +663,7 @@ c.Authenticator.auto_login = True
 #  If encryption is unavailable, auth_state cannot be persisted.
 #  
 #  New in JupyterHub 0.8
-c.Authenticator.enable_auth_state = True
+#c.Authenticator.enable_auth_state = True
 
 ## Dictionary mapping authenticator usernames to JupyterHub users.
 #  

@@ -9,7 +9,7 @@ server {
     charset     utf-8;
 
     location ${HUB_PATH} {
-        proxy_pass http://${HUB_HOST}:${HUB_PORT}/;
+        proxy_pass http://${HUB_HOST}:${HUB_PORT}${HUB_PATH};
         proxy_set_header Host $host;
         proxy_set_header Referer $http_referer;
         proxy_set_header X-Forwarded-For $remote_addr;

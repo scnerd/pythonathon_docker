@@ -25,8 +25,6 @@ services:
     build: db
     environment:
       POSTGRES_PASSWORD_FILE: /secrets/db_password
-      POSTGRES_DB: pythonathon
-      POSTGRES_MULTIPLE_DATABASES: jupyterhub
       PGDATA: /persistent/postgres/data
       NETWORK_ACCESS: internal
     volumes:
@@ -48,8 +46,8 @@ services:
     networks:
       - ctfnet
     environment:
-      OAUTH2_TOKEN_URL: http://pythonathon/o/token
-      OAUTH2_AUTHORIZE_URL: http://pythonathon/o/authorize
+      OAUTH2_TOKEN_URL: http://localhost:8000/o/token
+      OAUTH2_AUTHORIZE_URL: http://localhost:8000/o/authorize
       POSTGRES_HOST: db
       POSTGRES_DB: jupyterhub
       POSTGRES_PASSWORD_FILE: "/secrets/db_password"
@@ -57,6 +55,8 @@ services:
       JUPYTERHUB_PATH: /notebook/
     volumes:
       - "./secrets:/secrets:ro"
+    depends_on:
+      - db
 
   proxy:
     build: proxy
@@ -76,6 +76,7 @@ services:
       HUB_PATH: /notebook/
     depends_on:
       - pythonathon
+      - jupyterhub
 
 
 networks:

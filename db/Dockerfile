@@ -1,2 +1,3 @@
 FROM postgres:alpine
-COPY create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/
+
+COPY create_dbs.sh /docker-entrypoint-initdb.d/create_dbs.sh
