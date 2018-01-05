@@ -1,0 +1,24 @@
+upstream django {
+    server ${MAIN_HOST}:${MAIN_PORT};
+}
+
+server {
+    listen 8000;
+
+    server_name ${VIRTUAL_HOST};
+    charset     utf-8;
+
+    location ${HUB_PATH} {
+        proxy_pass http://${HUB_HOST}:${HUB_PORT}/;
+        proxy_set_header Host $host;
+        proxy_set_header Referer $http_referer;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        include    uwsgi_params;
+        uwsgi_pass django;
+    }
+}
+
