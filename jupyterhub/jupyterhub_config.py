@@ -77,9 +77,10 @@ from oauthenticator.generic import GenericOAuthenticator
 c.JupyterHub.authenticator_class = GenericOAuthenticator
 
 import os
-c.MyOAuthenticator.oauth_callback_url = 'https://pythonathon.davidmaxson.name/notebook/hub/oauth_callback'
-c.MyOAuthenticator.client_id = open(os.environ['OAUTH_CLIENT_ID_PATH']).read().strip()
-c.MyOAuthenticator.client_secret = open(os.environ['OAUTH_CLIENT_SECRET_PATH']).read().strip()
+client_id = open(os.environ['OAUTH_CLIENT_ID_PATH']).read().strip()
+print('ID: ' + client_id)
+c.GenericOAuthenticator.client_id = client_id
+c.GenericOAuthenticator.client_secret = open(os.environ['OAUTH_CLIENT_SECRET_PATH']).read().strip()
 
 ## The base URL of the entire application
 c.JupyterHub.base_url = os.environ.get('JUPYTERHUB_PATH', '/')

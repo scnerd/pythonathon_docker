@@ -48,13 +48,17 @@ services:
     environment:
       OAUTH2_TOKEN_URL: http://localhost:8000/o/token
       OAUTH2_AUTHORIZE_URL: http://localhost:8000/o/authorize
+      OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
+      OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
+      OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
       POSTGRES_HOST: db
       POSTGRES_DB: jupyterhub
-      POSTGRES_PASSWORD_FILE: "/secrets/db_password"
-      ADMINS: "scnerd"
+      POSTGRES_PASSWORD_FILE: /secrets/db_password
+      ADMINS: scnerd
       JUPYTERHUB_PATH: /notebook/
     volumes:
       - "./secrets:/secrets:ro"
+      - "./oauth:/oauth:rw"
     depends_on:
       - db
 
