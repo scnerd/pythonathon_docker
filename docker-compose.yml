@@ -29,7 +29,7 @@ services:
       NETWORK_ACCESS: internal
     volumes:
       - "./secrets:/secrets:ro"
-      - "./db_data:/persistent/postgres/data"
+      - "db_data:/var/lib/postgresql/data"
     deploy:
       replicas: 1
       restart_policy:
@@ -46,8 +46,8 @@ services:
     networks:
       - ctfnet
     environment:
-      OAUTH2_TOKEN_URL: http://localhost:8000/o/token
-      OAUTH2_AUTHORIZE_URL: http://localhost:8000/o/authorize
+      OAUTH2_TOKEN_URL: http://pythonathon:8000/o/token/
+      OAUTH2_AUTHORIZE_URL: http://localhost:8000/o/authorize/
       OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
       OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
       OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
@@ -88,3 +88,7 @@ networks:
   webnet:
     external:
       name: webnet
+
+volumes:
+  db_data:
+
