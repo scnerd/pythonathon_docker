@@ -59,13 +59,17 @@ services:
       POSTGRES_HOST: db
       POSTGRES_DB: jupyterhub
       POSTGRES_PASSWORD_FILE: /secrets/db_password
-      ADMINS: scnerd
+      ADMINS: admin
       JUPYTERHUB_PATH: /notebook/
+      DOCKER_NOTEBOOK_IMAGE: pythonathon_jupyternotebook
+      DOCKER_NETWORK_NAME: ctfnet
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
       - db
+    privileged: true
 
   proxy:
     build: proxy
@@ -87,9 +91,17 @@ services:
       - pythonathon
       - jupyterhub
 
+#  # Use this to build a custom image to launch
+#  jupyternotebook:
+#    build: jupyternotebook
+#    image: pythonathon_jupyternotebook
+#    command: ["echo", "Just need this to build, it doesn't need to run"]
+
 
 networks:
   ctfnet:
+    external:
+      name: ctfnet
   webnet:
     external:
       name: webnet

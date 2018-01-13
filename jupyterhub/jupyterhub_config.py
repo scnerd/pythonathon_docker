@@ -25,7 +25,25 @@ c.JupyterHub.db_url = 'postgresql://postgres:{password}@{host}/{db}'.format(
 c.JupyterHub.ip = '0.0.0.0'
 
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
-c.DockerSpawner.host_ip = "0.0.0.0"
+# c.DockerSpawner.container_image = os.environ.get('DOCKER_NOTEBOOK_IMAGE')
+
+network_name = os.environ['DOCKER_NETWORK_NAME']
+c.DockerSpawner.use_internal_ip = True
+c.DockerSpawner.network_name = network_name
+c.DockerSpawner.extra_host_config = {'network_mode': network_name}
+c.DockerSpawner.remove_containers = True
+c.Spawner.default_url = '/lab'  # Why doesn't this work?
+c.Spawner.args = ['--NotebookApp.allow_origin=*']
+
+notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR') or '/home/jovyan/work'
+c.DockerSpawner.notebook_dir = notebook_dir
+c.DockerSpawner.volumes = { 'jupyterhub-user-{username}': notebook_dir }
+c.DockerSpawner.extra_create_kwargs.update({ 'volume_driver': 'local' })
+
+c.DockerSpawner.debug = True
+
+c.JupyterHub.hub_ip = 'jupyterhub'
+c.JupyterHub.hub_port = 8080
 
 c.Spawner.cpu_limit = 0.25
 
