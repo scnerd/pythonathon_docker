@@ -9,8 +9,12 @@ services:
       JUPYTERHUB_HOST: jupyterhub
       JUPYTERHUB_PORT: 8000
       JUPYTERHUB_PATH: /notebook/
+      OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
+      OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
+      OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
     volumes:
       - "./secrets:/secrets:ro"
+      - "./oauth:/oauth:rw"
     depends_on:
       - db
     deploy:
@@ -46,6 +50,7 @@ services:
     networks:
       - ctfnet
     environment:
+      OAUTH2_USERDATA_URL: http://pythonathon:8000/o/whoami
       OAUTH2_TOKEN_URL: http://pythonathon:8000/o/token/
       OAUTH2_AUTHORIZE_URL: http://localhost:8000/o/authorize/
       OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
@@ -68,7 +73,7 @@ services:
       - webnet
       - ctfnet
     ports:
-      - 0.0.0.0:8000:8000  # debug, direct access
+      - 0.0.0.0:8000:8000
     environment:
       VIRTUAL_HOST: pythonathon.davidmaxson.name
       LETSENCRYPT_HOST: pythonathon.davidmaxson.name
@@ -91,4 +96,5 @@ networks:
 
 volumes:
   db_data:
+
 
