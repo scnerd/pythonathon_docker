@@ -1,3 +1,6 @@
 [submodule "pythonathon_v3"]
 	path = pythonathon_v3
 	url = https://github.com/scnerd/pythonathon_v3
+[submodule "pythonathon_angular2"]
+	path = pythonathon_angular2
+	url = https://github.com/scnerd/pythonathon_angular2
