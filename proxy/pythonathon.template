@@ -24,6 +24,18 @@ server {
         proxy_set_header Connection $http_connection;
     }
 
+    location ${SPA_PATH} {
+        proxy_pass http://${SPA_HOST}:${SPA_PORT};
+        proxy_set_header Host $host;
+        proxy_set_header Referer $http_referer;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $http_connection;
+    }
+
     location / {
         include    uwsgi_params;
         uwsgi_pass django;

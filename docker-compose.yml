@@ -25,6 +25,11 @@ services:
     networks:
       - ctfnet
 
+  frontend:
+    build: pythonathon_angular2
+    environment:
+      BACKEND: pythonathon
+
   db:
     build: db
     environment:
@@ -87,6 +92,9 @@ services:
       HUB_HOST: jupyterhub
       HUB_PORT: 8000
       HUB_PATH: /notebook/
+      SPA_PATH: /angular/
+      SPA_HOST: frontend
+      SPA_PORT: 4200
     depends_on:
       - pythonathon
       - jupyterhub
