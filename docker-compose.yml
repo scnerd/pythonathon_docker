@@ -3,6 +3,7 @@ services:
   pythonathon:
 #    image: pythonathon:latest
     build: pythonathon_v3
+    image: scnerd/pythonathon_main
     environment:
       DEBUGMODE: 1
       PASSWORD_FILE: /secrets/db_password
@@ -27,13 +28,14 @@ services:
 
   db:
     build: db
+    image: scnerd/pythonathon_db
     environment:
       POSTGRES_PASSWORD_FILE: /secrets/db_password
       PGDATA: /persistent/postgres/data
       NETWORK_ACCESS: internal
-    volumes:
-      - "./secrets:/secrets:ro"
-      - "db_data:/var/lib/postgresql/data"
+#    volumes:
+#      - "./secrets:/secrets:ro"
+#      - "./db_data:/var/lib/postgresql/data"
     deploy:
       replicas: 1
       restart_policy:
@@ -45,10 +47,11 @@ services:
       test: ["CMD", "psql", "-h", "localhost", "-p", "5432"]
 
   jupyterhub:
-#    image: jupyterhub/jupyterhub
     build: jupyterhub
+    image: scnerd/pythonathon_jupyterhub
     networks:
       - ctfnet
+#      - jupyternet
     environment:
       OAUTH2_USERDATA_URL: http://pythonathon:8000/o/whoami
       OAUTH2_TOKEN_URL: http://pythonathon:8000/o/token/
@@ -61,7 +64,7 @@ services:
       POSTGRES_PASSWORD_FILE: /secrets/db_password
       ADMINS: admin
       JUPYTERHUB_PATH: /notebook/
-      DOCKER_NOTEBOOK_IMAGE: pythonathon_jupyternotebook
+      DOCKER_NOTEBOOK_IMAGE: scnerd/pythonathon_notebook
       DOCKER_NETWORK_NAME: ctfnet
     volumes:
       - "./secrets:/secrets:ro"
@@ -69,10 +72,15 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
       - db
-    privileged: true
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        window: 5s
 
   proxy:
     build: proxy
+    image: scnerd/pythonathon_proxy
     networks:
       - webnet
       - ctfnet
@@ -90,23 +98,30 @@ services:
     depends_on:
       - pythonathon
       - jupyterhub
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        window: 5s
 
-#  # Use this to build a custom image to launch
-#  jupyternotebook:
-#    build: jupyternotebook
-#    image: pythonathon_jupyternotebook
-#    command: ["echo", "Just need this to build, it doesn't need to run"]
+  # Use this to build a custom image to launch
+  jupyternotebook:
+    build: jupyternotebook
+    image: scnerd/pythonathon_notebook
+    command: ["echo", "Just need this to build, it doesn't need to run"]
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: none
 
 
 networks:
   ctfnet:
     external:
       name: ctfnet
+  jupyternet:
+    external:
+      name: jupyternet
   webnet:
     external:
       name: webnet
-
-volumes:
-  db_data:
-
-

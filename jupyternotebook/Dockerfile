@@ -1,3 +1,1 @@
-FROM jupyter/notebook
-ARG JUPYTERHUB_VERSION=0.8.1
-RUN pip3 install --no-cache jupyterhub==$JUPYTERHUB_VERSION
+FROM jupyterhub/singleuser:0.8

@@ -4,15 +4,15 @@ c.JupyterHub.admin_access = True
 
 c.JupyterHub.answer_yes = False
 
-from oauthenticator.generic import LocalGenericOAuthenticator
-c.JupyterHub.authenticator_class = LocalGenericOAuthenticator
+from oauthenticator.generic import GenericOAuthenticator
+c.JupyterHub.authenticator_class = GenericOAuthenticator
 
 import os
 client_id = open(os.environ['OAUTH_CLIENT_ID_PATH']).read().strip()
 print('ID: ' + client_id)
-c.LocalGenericOAuthenticator.client_id = client_id
-c.LocalGenericOAuthenticator.client_secret = open(os.environ['OAUTH_CLIENT_SECRET_PATH']).read().strip()
-c.LocalGenericOAuthenticator.create_system_users = True
+c.GenericOAuthenticator.client_id = client_id
+c.GenericOAuthenticator.client_secret = open(os.environ['OAUTH_CLIENT_SECRET_PATH']).read().strip()
+c.GenericOAuthenticator.create_system_users = True
 
 ## The base URL of the entire application
 c.JupyterHub.base_url = os.environ.get('JUPYTERHUB_PATH', '/')
@@ -27,6 +27,9 @@ c.JupyterHub.ip = '0.0.0.0'
 
 # c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 # # c.DockerSpawner.container_image = os.environ.get('DOCKER_NOTEBOOK_IMAGE')
+# c.DockerSpawner.use_docker_client_env = True
+# c.JupyterHub.hub_ip = '0.0.0.0'
+# c.DockerSpawner.hub_ip_connect = 'jupyterhub'
 #
 # network_name = os.environ['DOCKER_NETWORK_NAME']
 # c.DockerSpawner.use_internal_ip = True
@@ -40,6 +43,22 @@ c.JupyterHub.ip = '0.0.0.0'
 # c.DockerSpawner.extra_create_kwargs.update({ 'volume_driver': 'local' })
 #
 # c.DockerSpawner.debug = True
+
+c.JupyterHub.spawner_class = 'cassinyspawner.SwarmSpawner'
+c.JupyterHub.hub_ip = '0.0.0.0'
+c.SwarmSpawner.jupyterhub_service_name = 'jupyterhub'
+c.SwarmSpawner.networks = [os.environ['DOCKER_NETWORK_NAME']]
+c.SwarmSpawner.container_spec = {
+    'args': '/usr/local/bin/start-singleuser.sh',
+    'Image': os.environ['DOCKER_NOTEBOOK_IMAGE'],
+    'mounts': []
+}
+c.SwarmSpawner.resource_spec = {
+    'cpu_limit': 1000,
+    'mem_limit': 256 * 2**20,
+    'cpu_reservation': 1000,
+    'mem_reservation': 256 * 2**20,
+}
 
 c.Spawner.default_url = '/lab'  # Why doesn't this work?
 c.Spawner.args = ['--NotebookApp.allow_origin=*']
