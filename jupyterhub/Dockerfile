@@ -7,6 +7,7 @@ RUN apt-get update && \
 
 # RUN pip install dockerspawner oauthenticator notebook jupyterlab
 # RUN jupyter serverextension enable --py jupyterlab --sys-prefix
+# RUN pip install dockerspawner oauthenticator
 RUN pip install swarmspawner oauthenticator
 
 ADD launch.sh /usr/bin/launch.sh

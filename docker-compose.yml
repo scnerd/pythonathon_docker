@@ -1,4 +1,4 @@
-version: "3"
+version: "3.3"
 services:
   pythonathon:
 #    image: pythonathon:latest
@@ -6,7 +6,9 @@ services:
     image: scnerd/pythonathon_main
     environment:
       DEBUGMODE: 1
-      PASSWORD_FILE: /secrets/db_password
+      POSTGRES_HOST: db
+      POSTGRES_DB: pythonathon
+      POSTGRES_PASSWORD_FILE: /secrets/db_password
       JUPYTERHUB_HOST: jupyterhub
       JUPYTERHUB_PORT: 8000
       JUPYTERHUB_PATH: /notebook/
@@ -27,15 +29,16 @@ services:
       - ctfnet
 
   db:
-    build: db
-    image: scnerd/pythonathon_db
+    image: postgres:alpine
     environment:
+      POSTGRES_MULTIPLE_DATABASES: pythonathon,jupyterhub
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD_FILE: /secrets/db_password
       PGDATA: /persistent/postgres/data
-      NETWORK_ACCESS: internal
-#    volumes:
-#      - "./secrets:/secrets:ro"
-#      - "./db_data:/var/lib/postgresql/data"
+    volumes:
+      - "./multiple_dbs.sh:/docker-entrypoint-initdb.d/multiple_dbs.sh"
+      - "./secrets:/secrets:ro"
+      - "./db_data:/persistent/postgresql/data"
     deploy:
       replicas: 1
       restart_policy:
@@ -43,15 +46,13 @@ services:
         window: 5s
     networks:
       - ctfnet
-    healthcheck:
-      test: ["CMD", "psql", "-h", "localhost", "-p", "5432"]
 
   jupyterhub:
     build: jupyterhub
     image: scnerd/pythonathon_jupyterhub
     networks:
       - ctfnet
-#      - jupyternet
+      - jupyternet
     environment:
       OAUTH2_USERDATA_URL: http://pythonathon:8000/o/whoami
       OAUTH2_TOKEN_URL: http://pythonathon:8000/o/token/
@@ -65,11 +66,15 @@ services:
       ADMINS: admin
       JUPYTERHUB_PATH: /notebook/
       DOCKER_NOTEBOOK_IMAGE: scnerd/pythonathon_notebook
-      DOCKER_NETWORK_NAME: ctfnet
+      DOCKER_NETWORK_NAME: jupyternet
+      DOCKER_HUB_NAME: jupyterhub
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./nb_data:/srv/jupyterhub"
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
     depends_on:
       - db
     deploy:
@@ -77,6 +82,11 @@ services:
       restart_policy:
         condition: any
         window: 5s
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - 8080:8080
 
   proxy:
     build: proxy
