@@ -1,9 +1,9 @@
-version: "3.3"
+version: "3"
 services:
   pythonathon:
 #    image: pythonathon:latest
     build: pythonathon_v3
-    image: scnerd/pythonathon_main
+    image: localhost:5000/pythonathon_main
     environment:
       DEBUGMODE: 1
       POSTGRES_HOST: db
@@ -49,7 +49,7 @@ services:
 
   jupyterhub:
     build: jupyterhub
-    image: scnerd/pythonathon_jupyterhub
+    image: localhost:5000/pythonathon_jupyterhub
     networks:
       - ctfnet
       - jupyternet
@@ -71,10 +71,8 @@ services:
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
-      - "./nb_data:/srv/jupyterhub"
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
+      - "./nb_data:/srv/jupyterhub/notebooks"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
       - db
     deploy:
@@ -90,7 +88,7 @@ services:
 
   proxy:
     build: proxy
-    image: scnerd/pythonathon_proxy
+    image: localhost:5000/pythonathon_proxy
     networks:
       - webnet
       - ctfnet
@@ -117,7 +115,7 @@ services:
   # Use this to build a custom image to launch
   jupyternotebook:
     build: jupyternotebook
-    image: scnerd/pythonathon_notebook
+    image: localhost:5000/pythonathon_notebook
     command: ["echo", "Just need this to build, it doesn't need to run"]
     deploy:
       replicas: 1
@@ -127,8 +125,6 @@ services:
 
 networks:
   ctfnet:
-    external:
-      name: ctfnet
   jupyternet:
     external:
       name: jupyternet

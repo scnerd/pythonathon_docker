@@ -1,4 +1,8 @@
-#c.Application.log_level = 30
+import logging
+
+c.Application.log_level = 30
+
+log = logging.getLogger()
 
 c.JupyterHub.admin_access = True
 
@@ -9,13 +13,15 @@ c.JupyterHub.authenticator_class = GenericOAuthenticator
 
 import os
 client_id = open(os.environ['OAUTH_CLIENT_ID_PATH']).read().strip()
-print('ID: ' + client_id)
+log.info('ID: ' + client_id)
 c.GenericOAuthenticator.client_id = client_id
 c.GenericOAuthenticator.client_secret = open(os.environ['OAUTH_CLIENT_SECRET_PATH']).read().strip()
 # c.GenericOAuthenticator.create_system_users = True
 
 ## The base URL of the entire application
-c.JupyterHub.base_url = os.environ.get('JUPYTERHUB_PATH', '/')
+path = os.environ.get('JUPYTERHUB_PATH', '/')
+c.JupyterHub.base_url = path
+log.info("Launching under path '{}'".format(path))
 
 c.JupyterHub.db_url = 'postgresql://postgres:{password}@{host}/{db}'.format(
     host=os.environ['POSTGRES_HOST'],
@@ -25,59 +31,27 @@ c.JupyterHub.db_url = 'postgresql://postgres:{password}@{host}/{db}'.format(
 
 c.JupyterHub.ip = '0.0.0.0'
 
-# c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
-# c.DockerSpawner.container_image = os.environ.get('DOCKER_NOTEBOOK_IMAGE')
-# c.DockerSpawner.use_docker_client_env = True
-# c.JupyterHub.hub_ip = '0.0.0.0'
-# c.DockerSpawner.hub_ip_connect = 'jupyterhub'
-#
-# network_name = os.environ['DOCKER_NETWORK_NAME']
-# c.DockerSpawner.use_internal_ip = True
-# c.DockerSpawner.network_name = network_name
-# c.DockerSpawner.extra_host_config = {'network_mode': network_name}
-# c.DockerSpawner.remove_containers = True
-#
-# notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR') or '/home/jovyan/work'
-# c.DockerSpawner.notebook_dir = notebook_dir
-# c.DockerSpawner.volumes = {'jupyterhub-user-{username}': notebook_dir}
+c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+c.DockerSpawner.container_image = os.environ.get('DOCKER_NOTEBOOK_IMAGE')
+c.DockerSpawner.use_docker_client_env = True
+
+network_name = os.environ['DOCKER_NETWORK_NAME']
+c.DockerSpawner.use_internal_ip = True
+c.DockerSpawner.network_name = network_name
+c.DockerSpawner.extra_host_config = {'network_mode': network_name}
+c.DockerSpawner.remove_containers = True
+
+notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR') or '/home/jovyan/work'
+c.DockerSpawner.notebook_dir = notebook_dir
+# c.DockerSpawner.volumes = {'notebooks/jupyterhub-user-{username}': notebook_dir}
 # c.DockerSpawner.extra_create_kwargs.update({'volume_driver': 'local'})
-#
-# c.DockerSpawner.debug = True
 
-c.JupyterHub.spawner_class = 'cassinyspawner.SwarmSpawner'
-c.SwarmSpawner.jupyterhub_service_name = os.environ.get('DOCKER_HUB_NAME', 'jupyterhub')
-c.SwarmSpawner.networks = [os.environ['DOCKER_NETWORK_NAME']]
+c.DockerSpawner.debug = True
 
-c.SwarmSpawner.placement = ["node.role == worker"]
-notebook_dir = os.getenv('NOTEBOOK_DIR', '/home/jovyan/work')
-c.SwarmSpawner.notebook_dir = notebook_dir
-mounts = [{
-    'type': 'volume',
-    'source': 'jupyterhub-user-{username}',
-    'target': notebook_dir
-}]
-c.SwarmSpawner.container_spec = {
-    'args': ['/usr/local/bin/start-singleuser.sh'],
-    'Image': os.getenv('DOCKER_NOTEBOOK_IMAGE', 'jupyterhub/singleuser:latest'),
-    'mounts': mounts
-}
-c.SwarmSpawner.use_user_options = True
-
-c.SwarmSpawner.resource_spec = {
-    # (int)  CPU limit in units of 10^9 CPU shares.
-    'cpu_limit': int(1 * 1e9),
-    # (int)  Memory limit in Bytes.
-    'mem_limit': int(512 * 1e6),
-    # (int)  CPU reservation in units of 10^9 CPU shares.
-    'cpu_reservation': int(1 * 1e9),
-    # (int)  Memory reservation in bytes
-    'mem_reservation': int(512 * 1e6),
-}
-
-c.Spawner.default_url = '/lab'  # Why doesn't this work?
+c.Spawner.default_url = '/lab'
 c.Spawner.args = ['--NotebookApp.allow_origin=*']
 
-# c.JupyterHub.hub_ip = 'jupyterhub'
+c.JupyterHub.hub_ip = 'jupyterhub'
 # c.JupyterHub.hub_port = 8080
 
 c.Spawner.cpu_limit = 0.25
