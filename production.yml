@@ -5,9 +5,11 @@ services:
     environment:
       DEBUGMODE: 0
       OAUTH_CALLBACK_URL: https://pythonathon.davidmaxson.name/notebook/hub/oauth_callback
-    ports:
     
   jupyterhub:
     environment:
       OAUTH2_AUTHORIZE_URL: https://pythonathon.davidmaxson.name/o/authorize/
       OAUTH_CALLBACK_URL: https://pythonathon.davidmaxson.name/notebook/hub/oauth_callback
+
+  proxy:
+    ports:

@@ -28,8 +28,6 @@ services:
         window: 5s
     networks:
       - ctfnet
-    ports:
-      - 8000:8000
 
   db:
     image: postgres:alpine
@@ -110,6 +108,8 @@ services:
       restart_policy:
         condition: any
         window: 5s
+    ports:
+      - 8000:80
 
   # Use this to build a custom image to launch
   jupyternotebook:
