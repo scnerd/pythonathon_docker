@@ -3,7 +3,7 @@ services:
   pythonathon:
 #    image: pythonathon:latest
     build: pythonathon_v3
-    image: localhost:5000/pythonathon_main
+    image: scnerd/pythonathon_main
     environment:
       DEBUGMODE: 1
       POSTGRES_HOST: db
@@ -49,7 +49,7 @@ services:
 
   jupyterhub:
     build: jupyterhub
-    image: localhost:5000/pythonathon_jupyterhub
+    image: scnerd/pythonathon_jupyterhub
     networks:
       - ctfnet
       - jupyternet
@@ -83,17 +83,13 @@ services:
       placement:
         constraints:
           - node.role == manager
-    ports:
-      - 8080:8080
 
   proxy:
     build: proxy
-    image: localhost:5000/pythonathon_proxy
+    image: scnerd/pythonathon_proxy
     networks:
       - webnet
       - ctfnet
-    ports:
-      - 0.0.0.0:8000:8000
     environment:
       VIRTUAL_HOST: pythonathon.davidmaxson.name
       LETSENCRYPT_HOST: pythonathon.davidmaxson.name
@@ -115,7 +111,7 @@ services:
   # Use this to build a custom image to launch
   jupyternotebook:
     build: jupyternotebook
-    image: localhost:5000/pythonathon_notebook
+    image: scnerd/pythonathon_notebook
     command: ["echo", "Just need this to build, it doesn't need to run"]
     deploy:
       replicas: 1
