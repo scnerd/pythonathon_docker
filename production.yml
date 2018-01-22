@@ -3,7 +3,7 @@ services:
   pythonathon:
     build: pythonathon_v3
     environment:
-      DEBUGMODE: 0
+#      DEBUGMODE: 0
       OAUTH_CALLBACK_URL: https://pythonathon.davidmaxson.name/notebook/hub/oauth_callback
     
   jupyterhub:
