@@ -112,6 +112,8 @@ services:
       restart_policy:
         condition: any
         window: 5s
+    ports:
+      - 8000:80
 
   # Use this to build a custom image to launch
   jupyternotebook:
