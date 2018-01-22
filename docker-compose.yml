@@ -5,6 +5,8 @@ services:
     build: pythonathon_v3
     image: scnerd/pythonathon_main
     environment:
+      # This is for Django, not for the auto proxy
+      VIRTUAL_HOST: pythonathon.davidmaxson.name
       DEBUGMODE: 1
       POSTGRES_HOST: db
       POSTGRES_DB: pythonathon
