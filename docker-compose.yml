@@ -21,6 +21,7 @@ services:
       - "./oauth:/oauth:rw"
     depends_on:
       - db
+    restart: always
     deploy:
       replicas: 1
       restart_policy:
@@ -40,6 +41,7 @@ services:
       - "./multiple_dbs.sh:/docker-entrypoint-initdb.d/multiple_dbs.sh"
       - "./secrets:/secrets:ro"
       - "./db_data:/persistent/postgres/data"
+    restart: always
     deploy:
       replicas: 1
       restart_policy:
@@ -76,6 +78,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
       - db
+    restart: always
     deploy:
       replicas: 1
       restart_policy:
@@ -103,6 +106,7 @@ services:
     depends_on:
       - pythonathon
       - jupyterhub
+    restart: always
     deploy:
       replicas: 1
       restart_policy:
