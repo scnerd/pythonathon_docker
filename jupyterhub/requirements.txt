@@ -1,0 +1,3 @@
+# dockerspawner
+git+https://github.com/scnerd/dockerspawner@swarmspawner
+oauthenticator

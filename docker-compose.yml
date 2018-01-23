@@ -46,7 +46,7 @@ services:
       replicas: 1
       restart_policy:
         condition: any
-        window: 5s
+        window: 2s
     networks:
       - ctfnet
 
