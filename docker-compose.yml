@@ -16,6 +16,8 @@ services:
       OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
       OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
       OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
+      RECAPTCHA_PUBLICKEY_PATH: /secrets/recaptcha_public
+      RECAPTCHA_PRIVATEKEY_PATH: /secrets/recaptcha_private
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
