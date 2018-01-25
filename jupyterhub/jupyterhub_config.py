@@ -32,14 +32,14 @@ c.JupyterHub.db_url = 'postgresql://postgres:{password}@{host}/{db}'.format(
 c.JupyterHub.ip = '0.0.0.0'
 
 c.JupyterHub.spawner_class = 'dockerspawner.SwarmSpawner'
-c.SwarmSpawner.container_image = os.environ.get('DOCKER_NOTEBOOK_IMAGE')
+c.SwarmSpawner.image = os.environ.get('DOCKER_NOTEBOOK_IMAGE')
 c.SwarmSpawner.use_docker_client_env = True
 
 network_name = os.environ['DOCKER_NETWORK_NAME']
 c.SwarmSpawner.use_internal_ip = True
 c.SwarmSpawner.network_name = network_name
 c.SwarmSpawner.extra_host_config = {'network_mode': network_name}
-c.SwarmSpawner.remove_containers = True
+c.SwarmSpawner.remove_services = True
 
 notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR') or '/home/jovyan/work'
 c.SwarmSpawner.notebook_dir = notebook_dir
@@ -51,7 +51,7 @@ c.SwarmSpawner.debug = True
 c.Spawner.default_url = '/lab'
 c.Spawner.args = ['--NotebookApp.allow_origin=*']
 
-c.JupyterHub.hub_ip = 'jupyterhub'
+c.JupyterHub.hub_ip = '0.0.0.0'
 # c.JupyterHub.hub_port = 8080
 
 c.Spawner.cpu_limit = 0.25

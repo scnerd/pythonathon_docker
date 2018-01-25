@@ -53,6 +53,8 @@ services:
   jupyterhub:
     build: jupyterhub
     image: scnerd/pythonathon_jupyterhub
+    # This is necessary to prevent the singleton hub from using its service number as its hostname
+    hostname: jupyterhub
     networks:
       - ctfnet
       - jupyternet

@@ -1,3 +1,6 @@
 [submodule "pythonathon_v3"]
 	path = pythonathon_v3
 	url = https://github.com/scnerd/pythonathon_v3
+[submodule "jupyterhub/dockerspawner"]
+	path = jupyterhub/dockerspawner
+	url = https://github.com/scnerd/dockerspawner
