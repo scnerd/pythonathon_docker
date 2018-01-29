@@ -12,4 +12,4 @@ services:
       OAUTH_CALLBACK_URL: https://pythonathon.davidmaxson.name/notebook/hub/oauth_callback
 
   proxy:
-    ports:
+    ports: []
