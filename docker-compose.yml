@@ -17,6 +17,8 @@ services:
       OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
       OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
       BACKUP_PATH: /ctf_data
+      GMAIL_USER_PATH: /secrets/gmail_user
+      GMAIL_PWD_PATH: /secrets/gmail_password
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
