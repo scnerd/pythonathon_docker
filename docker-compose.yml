@@ -16,9 +16,13 @@ services:
       OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
       OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
       OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
+      BACKUP_PATH: /ctf_data
+      GMAIL_USER_PATH: /secrets/gmail_user
+      GMAIL_PWD_PATH: /secrets/gmail_password
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
+      - "./ctf_data:/ctf_data:rw"
     depends_on:
       - db
     restart: always
@@ -46,13 +50,15 @@ services:
       replicas: 1
       restart_policy:
         condition: any
-        window: 5s
+        window: 2s
     networks:
       - ctfnet
 
   jupyterhub:
     build: jupyterhub
     image: scnerd/pythonathon_jupyterhub
+    # This is necessary to prevent the singleton hub from using its service number as its hostname
+    hostname: jupyterhub
     networks:
       - ctfnet
       - jupyternet
