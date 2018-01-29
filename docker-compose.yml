@@ -16,9 +16,11 @@ services:
       OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
       OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
       OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
+      BACKUP_PATH: /ctf_data
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
+      - "./ctf_data:/ctf_data:rw"
     depends_on:
       - db
     restart: always
