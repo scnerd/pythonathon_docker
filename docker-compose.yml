@@ -80,7 +80,7 @@ services:
     volumes:
       - "./secrets:/secrets:ro"
       - "./oauth:/oauth:rw"
-      - "./nb_data:/srv/jupyterhub/notebooks"
+      # - "./nb_data:/notebooks"
       - "/var/run/docker.sock:/var/run/docker.sock"
     depends_on:
       - db

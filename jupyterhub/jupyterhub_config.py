@@ -1,8 +1,4 @@
-import logging
-
 c.Application.log_level = 30
-
-log = logging.getLogger()
 
 c.JupyterHub.admin_access = True
 
@@ -13,15 +9,13 @@ c.JupyterHub.authenticator_class = GenericOAuthenticator
 
 import os
 client_id = open(os.environ['OAUTH_CLIENT_ID_PATH']).read().strip()
-log.info('ID: ' + client_id)
 c.GenericOAuthenticator.client_id = client_id
 c.GenericOAuthenticator.client_secret = open(os.environ['OAUTH_CLIENT_SECRET_PATH']).read().strip()
 # c.GenericOAuthenticator.create_system_users = True
 
-## The base URL of the entire application
+# The base URL of the entire application
 path = os.environ.get('JUPYTERHUB_PATH', '/')
 c.JupyterHub.base_url = path
-log.info("Launching under path '{}'".format(path))
 
 c.JupyterHub.db_url = 'postgresql://postgres:{password}@{host}/{db}'.format(
     host=os.environ['POSTGRES_HOST'],
@@ -41,10 +35,10 @@ c.SwarmSpawner.network_name = network_name
 c.SwarmSpawner.extra_host_config = {'network_mode': network_name}
 c.SwarmSpawner.remove_services = True
 
-notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR') or '/home/jovyan/work'
+notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR', '/home/jovyan/work')
 c.SwarmSpawner.notebook_dir = notebook_dir
-# c.SwarmSpawner.volumes = {'notebooks/jupyterhub-user-{username}': notebook_dir}
-# c.SwarmSpawner.extra_create_kwargs.update({'volume_driver': 'local'})
+# c.SwarmSpawner.volumes = {'jupyterhub-user-{username}': notebook_dir}
+# c.SwarmSpawner.extra_create_kwargs.update({'volume_driver': 'BeeGFS'})  # Need to get distributed FS up for this to work
 
 c.SwarmSpawner.debug = True
 
