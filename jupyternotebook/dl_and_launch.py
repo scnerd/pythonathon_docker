@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
+import logging
 import os
 import re
-import requests
 import time
-import logging
+
+import requests
 
 log = logging.getLogger()
 log.addHandler(logging.StreamHandler())
@@ -25,6 +26,7 @@ if not os.path.exists(directory):
     log.debug("Creating question file directory")
     os.makedirs(directory)
 
+
 def sync_fs():
     global retrieved
     bad_keys = []
@@ -34,6 +36,7 @@ def sync_fs():
             bad_keys.append(key)
     for key in bad_keys:
         del retrieved[key]
+
 
 def sync_with_server():
     global retrieved
@@ -48,9 +51,13 @@ def sync_with_server():
                 retrieved[key] = path
                 open(path, 'wb').write(resp.content)
                 log.info("Downloaded new file {} ({} bytes)".format(path, len(resp.content)))
+        else:
+            log.debug("Already have key {} at {}".format(key, retrieved[key]))
 
-while True:
-    log.info("Checking for changes to question files")
-    sync_fs()
-    sync_with_server()
-    time.sleep(5)
+
+if __name__ == '__main__':
+    while True:
+        log.info("Checking for changes to question files")
+        sync_fs()
+        sync_with_server()
+        time.sleep(30)
