@@ -16,7 +16,8 @@ services:
       OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
       OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
       OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
-      BACKUP_PATH: /ctf_data
+      BACKUP_PATH: /ctf_data/db_backups
+      FILE_STORAGE: /ctf_data/files
       GMAIL_USER_PATH: /secrets/gmail_user
       GMAIL_PWD_PATH: /secrets/gmail_password
     volumes:
@@ -94,6 +95,25 @@ services:
         constraints:
           - node.role == manager
 
+  nbproxy:
+    build: notebook_proxy
+    image: scnerd/pythonathon_nbproxy
+    networks:
+      - ctfnet
+      - jupyternet
+    environment:
+      MAIN_HOST: pythonathon
+      MAIN_PORT: 3031
+    depends_on:
+      - pythonathon
+      - jupyterhub
+    restart: always
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        window: 5s
+
   proxy:
     build: proxy
     image: scnerd/pythonathon_proxy
@@ -123,7 +143,11 @@ services:
 
   # Use this to build a custom image to launch
   jupyternotebook:
-    build: jupyternotebook
+    build:
+      context: jupyternotebook
+      args:
+       - PYTHONATHON_HOST=nbproxy
+       - FILES_DIR=~/work/question_files
     image: scnerd/pythonathon_notebook
     command: ["echo", "Just need this to build, it doesn't need to run"]
     deploy:

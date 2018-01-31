@@ -1,0 +1,23 @@
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+upstream django {
+    server ${MAIN_HOST}:${MAIN_PORT};
+}
+
+server {
+    listen 80;
+
+    client_max_body_size 8M;
+
+    server_name ${VIRTUAL_HOST};
+    charset     utf-8;
+
+    location ^~ /dl/ {
+        include    uwsgi_params;
+        uwsgi_pass django;
+    }
+}
+
