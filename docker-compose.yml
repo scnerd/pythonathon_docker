@@ -16,6 +16,7 @@ services:
       OAUTH_CALLBACK_URL: http://localhost:8000/notebook/hub/oauth_callback
       OAUTH_CLIENT_ID_PATH: /oauth/oauth_client_id
       OAUTH_CLIENT_SECRET_PATH: /oauth/oauth_client_secret
+      RESTORE_PATH: /ctf_data/restore/db.json
       BACKUP_PATH: /ctf_data/db_backups
       FILE_STORAGE: /ctf_data/files
       GMAIL_USER_PATH: /secrets/gmail_user
