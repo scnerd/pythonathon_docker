@@ -150,9 +150,9 @@ services:
        - PYTHONATHON_HOST=nbproxy
        - FILES_DIR=~/work/question_files
     image: scnerd/pythonathon_notebook
-    command: ["echo", "Just need this to build, it doesn't need to run"]
+    #command: ["echo", "Just need this to build, it doesn't need to run"]
     deploy:
-      replicas: 1
+      replicas: 0
       restart_policy:
         condition: none
 

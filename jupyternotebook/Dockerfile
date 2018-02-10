@@ -9,4 +9,4 @@ ENV FILES_DIR=$FILES_DIR
 ADD entrypoint.sh /usr/local/bin/
 ADD dl_and_launch.py /usr/local/bin/
 
-CMD ["entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
