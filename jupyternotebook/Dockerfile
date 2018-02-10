@@ -1,4 +1,4 @@
-FROM jupyter/minimal-notebook
+FROM jupyterhub/singleuser
 
 ARG PYTHONATHON_HOST
 ARG FILES_DIR
