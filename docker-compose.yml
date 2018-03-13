@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 services:
   pythonathon:
     build: pythonathon_v3
@@ -77,7 +77,7 @@ services:
       ADMINS: admin
       JUPYTERHUB_PATH: /notebook/
       DOCKER_NOTEBOOK_IMAGE: scnerd/pythonathon_notebook
-      DOCKER_NETWORK_NAME: jupyternet
+      DOCKER_NETWORK_NAME: pythonathon_jupyternet
       DOCKER_HUB_NAME: jupyterhub
     volumes:
       - "./secrets:/secrets:ro"
@@ -100,11 +100,15 @@ services:
     build: notebook_proxy
     image: scnerd/pythonathon_nbproxy
     networks:
-      - ctfnet
-      - jupyternet
+      ctfnet:
+      default:
+      jupyternet:
+        aliases:
+          - pypi.python.org
     environment:
       MAIN_HOST: pythonathon
       MAIN_PORT: 3031
+      VIRTUAL_HOST: nbproxy
     depends_on:
       - pythonathon
       - jupyterhub
@@ -159,9 +163,12 @@ services:
 
 networks:
   ctfnet:
+    internal: true
+    driver: overlay
   jupyternet:
-    external:
-      name: jupyternet
+    internal: true
+    driver: overlay
+    name: jupyternet
   webnet:
-    external:
-      name: webnet
+    external: true
+    name: webnet

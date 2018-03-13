@@ -1,3 +1,4 @@
 # dockerspawner
+tornado >=5
 oauthenticator
 psycopg2
