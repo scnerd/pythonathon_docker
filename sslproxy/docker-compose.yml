@@ -1,0 +1,49 @@
+version: "3"
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "vhostd:/etc/nginx/vhost.d"
+      - "html:/usr/share/nginx/html"
+      - "certs:/etc/nginx/certs"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "./additional.conf:/etc/nginx/conf.d/my_proxy.conf:ro"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        window: 5s
+    networks:
+      - webnet
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "vhostd:/etc/nginx/vhost.d"
+      - "html:/usr/share/nginx/html"
+      - "certs:/etc/nginx/certs"
+    depends_on:
+      - nginx-proxy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        window: 5s
+    networks:
+      - webnet
+
+volumes:
+  vhostd:
+  html:
+  certs:
+
+networks:
+  webnet:
+    external:
+      name: webnet
