@@ -2,6 +2,8 @@
 
 The Pythonathon is a question/answer CTF for learning how to program, primarily in Python; in practice, it could support any textual question/answer competition, and the included JupyterHub could launch notebooks for any language supported by Jupyter Notebook. This codebase makes and attempt to run the entire competition from a fairly minimal server (1 CPU, 1 GB RAM, 4-8 GB disk), permitting a virtually one-click deployment of a coding competition in nearly any environment (even, potentially, a raspberry pi).
 
+[I host a currently running version of this system for demonstration purposes.](https://pythonathon.davidmaxson.name/)
+
 ## TODO:
 
 Enable loading questions on first run from a dump file
