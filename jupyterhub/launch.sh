@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
+set -ex
+
 sleep 4
-set +e
-jupyterhub upgrade-db;
-set -e
+jupyterhub upgrade-db
 jupyterhub -f /srv/jupyterhub/jupyterhub_config.py

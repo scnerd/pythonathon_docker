@@ -35,6 +35,8 @@ services:
         window: 5s
     networks:
       - ctfnet
+    ports:
+      - 8001:8000
 
   db:
     image: postgres:alpine
