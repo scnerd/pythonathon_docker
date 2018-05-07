@@ -15,7 +15,4 @@ ADD launch.sh /usr/bin/launch.sh
 
 ADD jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-# TODO: This is a temporary patch for buggy migration in jupyterhub docker image. It'll probably be fixed in 0.9.1+
-ADD "https://github.com/jupyterhub/jupyterhub/raw/master/jupyterhub/alembic/versions/99a28a4418e1_user_created.py" "/opt/conda/lib/python3.5/site-packages/jupyterhub/alembic/versions/99a28a4418e1_user_created.py"
-
 CMD /usr/bin/launch.sh
