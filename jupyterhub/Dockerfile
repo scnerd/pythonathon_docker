@@ -8,9 +8,6 @@ RUN apt-get update && \
     apt-get autoremove -y gcc && \
     apt-get clean
 
-ADD dockerspawner /dockerspawner
-RUN pip install -e /dockerspawner
-
 ADD launch.sh /usr/bin/launch.sh
 
 ADD jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
